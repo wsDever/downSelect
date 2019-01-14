@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <!-- <title>Dropdown.js - a lightweight dropdown of jQuery plugins </title> -->
+  <!-- <link rel="stylesheet" type="text/css" href="http://www.jq22.com/jquery/bootstrap-3.3.4.css"> -->
+  <script src="http://www.jq22.com/jquery/jquery-1.10.2.js"></script>
+  <link rel="stylesheet" type="text/css" href="./jquery.downSelect.css">
+  <link rel="stylesheet" type="text/css" href="./owner.css">
+
+  <script src="./jquery.downSelect.js"></script>
+</head>
+
+<body>
+    <div class="selectEl">
+      <select style="display:none" name="" id="fields" multiple placeholder="请选择"> </select>
+    </div>
+  <script>
+    var data = [
+      {"selected":false,"name":"你好","id":"sel0"},
+      {"selected":true,"name":"你好呀","id":"sel1"},
+      {"selected":true,"name":"你真好呀","id":"sel2"},
+      {"selected":false,"name":"你确实不错","id":"sel3"},
+      {"selected":false,"name":"你确实不错呀","id":"sel4"},
+      {"selected":false,"name":"你是确实不错的","id":"sel6"},
+      {"selected":false,"name":"你是真的确实不错","id":"sel7"},
+      {"selected":false,"name":"你是真的确实不错的","id":"sel8"},
+      {"selected":false,"name":"你还是确实不错的人呀","id":"sel9"},
+      {"selected":false,"name":"你是确实真的不错的人呀","id":"sel10"},
+      {"selected":false,"name":"你还是一个确实不错的人呀","id":"sel11"},
+      {"selected":false,"name":"你还是一个确实不错的人呀哈","id":"sel12"},
+      {"selected":false,"name":"你还是一个确实不错的人呀哈哈","id":"sel13"}
+      ];
+    // var dataJson = JSON.parse(data);
+    var dataJson = data ;
+  	var select = [];
+  	$.each(select,function(index,value){
+  		$.each(dataJson,function(jindex,obj){
+  			if(value == obj.id){
+  				obj.selected = true;
+  			}
+  		})
+  	})
+  	var dropdown = $('.selectEl').downSelect({
+        data:  dataJson,
+        limitCount: 2000,
+        multipleMode: 'text',
+        radioMode: true,
+        choice: function(xxxx, event) {
+          console.log(xxxx, this);
+        },
+    	  del : function(){
+    		  // alert(1);
+    	  }
+      });
+  </script>
+</body>
+
+</html>

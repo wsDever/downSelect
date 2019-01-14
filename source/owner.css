@@ -1,0 +1,118 @@
+.dropdown-main{
+      border-top: 1px solid #ccc;
+      background: #e1e7ef;
+      padding:0;
+    }
+    .dropdown-group, 
+    .dropdown-option{
+      height: 40px;
+      line-height: 40px;
+      width:100%;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+    .dropdown-option.dropdown-chose{
+      background: #cfcfcf;
+      border-bottom: none;
+    }
+    .dropdown-option.dropdown-chose:after{
+      margin:15px;
+    }
+
+    .dropdown-display-label{
+      background: #e1e5e7;
+      padding:7px 25px 7px 0px;
+    }
+    .dropdown-display-label .dropdown-selected{
+      max-width:100px;
+      height: 20px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      margin:3px;
+      vertical-align: middle;
+    }
+    .dropdown-display-label .dropdown-search{
+      /*opacity: 0;*/
+      background: #e1e5e7;
+      height: 28px;
+      /*padding: 1px 0;*/
+      vertical-align: middle;
+    }
+    .dropdown-display-label .dropdown-search input{
+      height: 28px;
+      padding:0;
+      background: #e1e5e7;
+
+    }
+    .dropdown-display-label .dropdown-selected .del{
+      right: 5px;
+    }
+    
+    .dropdown-display-label:after, 
+    .dropdown-display:after{
+      top: 17px; 
+    }
+
+
+    .dropdown-display{
+      line-height: 42px;
+      box-sizing: border-box;
+      padding: 0;
+    }
+    .dropdown-display .placeholder:first-child{
+      line-height: 42px;
+    }
+
+    .dropdown-display .dropdown-chose-list{
+      margin-top: -4px;
+      max-width: 96%;
+    }
+    .dropdown-main input{
+      height: 40px;
+      line-height: 38px;
+    }
+    .dropdown-clear-all{
+      margin-top: 4px;
+      text-decoration: none;
+      height: 30px;
+      line-height: 28px;
+    }
+  
+    .dropdown-radio-li .dropdown-option{
+      position: relative;
+      padding-left: 24px;
+    }
+    .dropdown-radio-li .dropdown-option:before{
+      position: absolute;
+      content: '';
+      width: 16px;
+      height: 16px;
+      background: #fff;
+      border-radius: 4px;
+
+      left:5px;
+      top:12.5px;
+      margin:0;
+      padding:0;
+      z-index: 1;
+    }
+    .dropdown-radio-li .dropdown-option.dropdown-chose{
+      background: transparent;
+    }
+    .dropdown-radio-li .dropdown-option.dropdown-chose:after{
+      position: absolute;
+      content: '';
+      width: 16px;
+      height: 16px;
+      background: #666666;
+      border-radius: 4px;
+
+      left:5px;
+      top:12.5px;
+      margin:0;
+      padding:0;
+      z-index: 2;
+    }
