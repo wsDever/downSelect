@@ -54,9 +54,10 @@
     data: [],
     searchable: true,
     radioMode: false,
+    clearAll: true,
     searchNoData: '<li style="color:#ddd">查无数据，换个词儿试试 /(ㄒoㄒ)/~~</li>',
     choice: function choice(selectedId,event) {},
-	  del: function del() {}
+    del: function del() {}
   };
 
   var KEY_CODE = {
@@ -79,7 +80,7 @@
     var isRadioMode = this.config.radioMode;
     var templateSearch = searchable ? '<span class="dropdown-search">' + this.config.input + '</span>' : '';
 
-    return isLabelMode ? '<div class="dropdown-display-label"><div class="dropdown-chose-list">' + templateSearch + '</div></div><div class="dropdown-main'+( isRadioMode ? ' dropdown-radio-li':'' )+'">{{ul}}</div>' : '<a href="javascript:;" class="dropdown-display"><span class="dropdown-chose-list"></span><a href="javascript:;"  class="dropdown-clear-all">\xD7</a></a><div class="dropdown-main'+( isRadioMode ? ' dropdown-radio-li':'' )+'">' + templateSearch + '{{ul}}</div>';
+    return isLabelMode ? '<div class="dropdown-display-label"><div class="dropdown-chose-list">' + templateSearch + '</div></div><div class="dropdown-main'+( isRadioMode ? ' dropdown-radio-li':'' )+'">{{ul}}</div>' : '<a href="javascript:;" class="dropdown-display"><span class="dropdown-chose-list"></span></a>'+ (this.config.clearAll ? '<a href="javascript:;"  class="dropdown-clear-all">\xD7</a>' : '') + '<div class="dropdown-main'+( isRadioMode ? ' dropdown-radio-li':'' )+'">' + templateSearch + '{{ul}}</div>';
   }
 
   // 超出限制提示
@@ -103,7 +104,6 @@
   // select-option 转 ul-li
   function selectToDiv(str) {
     var result = str || '';
-    var isRadioMode = this.config.radioMode;
     // 移除select标签
     result = result.replace(/<select[^>]*>/gi, '').replace('</select>', '');
     // 移除 optgroup 结束标签
@@ -121,7 +121,6 @@
       var isDisabled = matcher.indexOf('disabled') > -1 ? true : false;
       return '<li ' + (isDisabled ? ' disabled' : ' tabindex="0"') + ' data-value="' + (value ? value[1] : '') + '" class="dropdown-option' + (isSelected ? ' dropdown-chose' : '') + '">' + (name ? name[1] : '') + '</li>';
     });
-
     return result;
   }
 
@@ -135,87 +134,86 @@
     if (!data || !data.length) {
       return false;
     }
-	var defaultdata = singleSelectFlag  ? '[]' : '[{"selected":false,"name":"全选","id":"all"}]';
-  var dataJson = JSON.parse(defaultdata);
-	$.each(dataJson, function (index, val) {
-      // disable 权重高于 selected
-      var hasGroup = val.groupId;
-      var isDisabled = val.disabled ? ' disabled' : '';
-      var isSelected = val.selected && !isDisabled ? ' selected' : '';
+    var defaultdata = singleSelectFlag  ? '[]' : '[{"selected":false,"name":"全选","id":"all"}]';
+    var dataJson = JSON.parse(defaultdata);
+    $.each(dataJson, function (index, val) {
+        // disable 权重高于 selected
+        var hasGroup = val.groupId;
+        var isDisabled = val.disabled ? ' disabled' : '';
+        var isSelected = val.selected && !isDisabled ? ' selected' : '';
 
-      var temp = '<option' + isDisabled + isSelected + ' value="' + val.id + '">' + val.name + '</option>';
+        var temp = '<option' + isDisabled + isSelected + ' value="' + val.id + '">' + val.name + '</option>';
 
-      if (isSelected && !singleSelectFlag) {
-        name.push('<span class="dropdown-selected">' + val.name + '<i class="del" data-id="' + val.id + '"></i></span>');
-        selectAmount++;
-      }
-
-      // 判断是否有分组
-      if (hasGroup) {
-        if (map[val.groupId]) {
-          map[val.groupId] += temp;
-        } else {
-          //  &janking& just a separator
-          map[val.groupId] = val.groupName + '&janking&' + temp;
-        }
-      } else {
-        map[index] = temp;
-      }
-    });
-    var onlyOneFlag = false;
-    $.each(data, function (index, val) {
-      // disable 权重高于 selected
-      var hasGroup = val.groupId;
-      var isDisabled = val.disabled ? ' disabled' : '';
-      var isSelected = val.selected && !isDisabled ? ' selected' : '';
-
-      var temp = '';
-      // 多选
-      if(!singleSelectFlag){
-        temp = '<option' + isDisabled + isSelected + ' value="' + val.id + '">' + val.name + '</option>';
-        if (isSelected) {
-          name.push('<span class="dropdown-selected">' + val.name + '<i class="del" data-id="' + val.id + '"></i></span>');
-          selectAmount++;        
-        } 
-      }else{
-        // 单选
-        if (isSelected && !onlyOneFlag) {
-          temp = '<option' + isDisabled + isSelected + ' value="' + val.id + '">' + val.name + '</option>';
+        if (isSelected && !singleSelectFlag) {
           name.push('<span class="dropdown-selected">' + val.name + '<i class="del" data-id="' + val.id + '"></i></span>');
           selectAmount++;
-          onlyOneFlag = true ;     
-        }else{
-          temp = '<option' + isDisabled + ' value="' + val.id + '">' + val.name + '</option>';
         }
-      }
-      // 判断是否有分组
-      if (hasGroup) {
-        if (map[val.groupId]) {
-          map[val.groupId] += temp;
+
+        // 判断是否有分组
+        if (hasGroup) {
+          if (map[val.groupId]) {
+            map[val.groupId] += temp;
+          } else {
+            //  &janking& just a separator
+            map[val.groupId] = val.groupName + '&janking&' + temp;
+          }
         } else {
-          //  &janking& just a separator
-          map[val.groupId] = val.groupName + '&janking&' + temp;
-        }
-      } else {
-        if(!singleSelectFlag)
-          map[index + 1] = temp;
-        else
           map[index] = temp;
-      }
-    });
+        }
+      });
+      var onlyOneFlag = false;
+      $.each(data, function (index, val) {
+        // disable 权重高于 selected
+        var hasGroup = val.groupId;
+        var isDisabled = val.disabled ? ' disabled' : '';
+        var isSelected = val.selected && !isDisabled ? ' selected' : '';
 
-    $.each(map, function (index, val) {
-      var option = val.split('&janking&');
-      // 判断是否有分组
-      if (option.length === 2) {
-        var groupName = option[0];
-        var items = option[1];
-        result += '<optgroup label="' + groupName + '" data-group-id="' + index + '">' + items + '</optgroup>';
-      } else {
-        result += val;
-      }
-    });
+        var temp = '';
+        // 多选
+        if(!singleSelectFlag){
+          temp = '<option' + isDisabled + isSelected + ' value="' + val.id + '">' + val.name + '</option>';
+          if (isSelected) {
+            name.push('<span class="dropdown-selected">' + val.name + '<i class="del" data-id="' + val.id + '"></i></span>');
+            selectAmount++;        
+          } 
+        }else{
+          // 单选
+          if (isSelected && !onlyOneFlag) {
+            temp = '<option' + isDisabled + isSelected + ' value="' + val.id + '">' + val.name + '</option>';
+            name.push('<span class="dropdown-selected">' + val.name + '<i class="del" data-id="' + val.id + '"></i></span>');
+            selectAmount++;
+            onlyOneFlag = true ;     
+          }else{
+            temp = '<option' + isDisabled + ' value="' + val.id + '">' + val.name + '</option>';
+          }
+        }
+        // 判断是否有分组
+        if (hasGroup) {
+          if (map[val.groupId]) {
+            map[val.groupId] += temp;
+          } else {
+            //  &janking& just a separator
+            map[val.groupId] = val.groupName + '&janking&' + temp;
+          }
+        } else {
+          if(!singleSelectFlag)
+            map[index + 1] = temp;
+          else
+            map[index] = temp;
+        }
+      });
 
+      $.each(map, function (index, val) {
+        var option = val.split('&janking&');
+        // 判断是否有分组
+        if (option.length === 2) {
+          var groupName = option[0];
+          var items = option[1];
+          result += '<optgroup label="' + groupName + '" data-group-id="' + index + '">' + items + '</optgroup>';
+        } else {
+          result += val;
+        }
+      });
     return [result, name, selectAmount];
   }
 
@@ -274,14 +272,19 @@
       if (event.keyCode > 36 && event.keyCode < 41) {
         return;
       }
-
-      $.each(data, function (key, value) {
-        if (value.name.toLowerCase().indexOf(intputValue) > -1 || '' + value.id === '' + intputValue) {
-          result.push(value);
+      result = data.map(function (value,key) {
+        var tValue = $.extend(true, {}, value);
+        var idx = tValue.name.toLowerCase().indexOf(intputValue);
+        if (idx > -1 || '' + tValue.id === '' + intputValue) {
+          var val_before = tValue.name.substr(0,idx);
+          var val_after = tValue.name.substr(idx + intputValue.length);
+          tValue.name = val_before + '<span class="search-span">'+ intputValue + '</span>' + val_after;
+          return tValue;
+        }else{
+          return value;
         }
       });
-
-      $el.find('ul').html(selectToDiv.call(_dropdown,objectToSelect(result,_dropdown.isSingleSelect)[0]) || _config.searchNoData);
+      $el.find('ul').html(selectToDiv(objectToSelect(result,_dropdown.isSingleSelect)[0]) || _config.searchNoData);
     }, 300),
     control: function control(event) {
       var keyCode = event.keyCode;
@@ -324,7 +327,7 @@
       var value = $target.attr('data-value');
       var hasSelected = $target.hasClass('dropdown-chose');
       var selectedName = [];
-	    var selectedId = [];
+      var selectedId = [];
       if (hasSelected) {
         if(value == 'disall'){
           var allli = $target.parent().children();
@@ -342,9 +345,9 @@
           _dropdown.selectAmount--;
         }
       } else {
-  		  if(value =='all'){
+        if(value =='all'){
           $target.addClass('dropdown-chose').attr("data-value","disall").html("取消");
-  			  var allli = $target.parent().children();
+          var allli = $target.parent().children();
           if(allli.length - 1 < _config.limitCount){
             $.each(allli,function(){
               if($(this).attr("data-value") != 'disall'){
@@ -356,42 +359,42 @@
             maxItemAlert.call(_dropdown);
             return false;
           }
-  		  }else{
-    			  if (_dropdown.selectAmount < _config.limitCount) {
-    				  $target.addClass('dropdown-chose');
-    				  _dropdown.selectAmount++;
-    			} else {
-    			  maxItemAlert.call(_dropdown);
-    			  return false;
-    			}
-  		  }
+        }else{
+            if (_dropdown.selectAmount < _config.limitCount) {
+              $target.addClass('dropdown-chose');
+              _dropdown.selectAmount++;
+          } else {
+            maxItemAlert.call(_dropdown);
+            return false;
+          }
+        }
       }
 
       _dropdown.name = [];
 
       $.each(_config.data, function (key, item) {
-		  if(value =='all'){
-			  if(item.id != 'all' && item.id != 'disall'){
-				  item.selected = true;
-				  selectedName.push(item.name);
-				  selectedId.push(item.id);
-				  _dropdown.name.push('<span class="dropdown-selected">' + item.name + '<i class="del" data-id="' + item.id + '"></i></span>'); 
-			  }
-			  
-		  }else if(value =='disall'){
-				selectedName = [];
-				selectedId = [];
-				item.selected = false;
-		  }else{
-			  if ('' + item.id === '' + value) {
-				  item.selected = hasSelected ? false : true;
-				}
-				if (item.selected) {
-				  selectedName.push(item.name);
-				  selectedId.push(item.id);
-				  _dropdown.name.push('<span class="dropdown-selected">' + item.name + '<i class="del" data-id="' + item.id + '"></i></span>');
-				}
-		  }
+      if(value =='all'){
+        if(item.id != 'all' && item.id != 'disall'){
+          item.selected = true;
+          selectedName.push(item.name);
+          selectedId.push(item.id);
+          _dropdown.name.push('<span class="dropdown-selected">' + item.name + '<i class="del" data-id="' + item.id + '"></i></span>'); 
+        }
+        
+      }else if(value =='disall'){
+        selectedName = [];
+        selectedId = [];
+        item.selected = false;
+      }else{
+        if ('' + item.id === '' + value) {
+          item.selected = hasSelected ? false : true;
+        }
+        if (item.selected) {
+          selectedName.push(item.name);
+          selectedId.push(item.id);
+          _dropdown.name.push('<span class="dropdown-selected">' + item.name + '<i class="del" data-id="' + item.id + '"></i></span>');
+        }
+      }
       });
 
       $select.find('option[value="' + value + '"]').prop('selected', hasSelected ? false : true);
@@ -463,8 +466,8 @@
       _dropdown.$el.find('[data-value="' + id + '"]').removeClass('dropdown-chose');
       _dropdown.$el.find('[value="' + id + '"]').prop('selected', false).removeAttr('selected');
       $target.closest('.dropdown-selected').remove();
-	  
-	  _dropdown.config.del.call(_dropdown, event);
+    
+    _dropdown.config.del.call(_dropdown, event);
       return false;
     },
     clearAll: function clearAll(event) {
@@ -473,12 +476,13 @@
         $(el).trigger('click');
       });
       this.$el.find('.dropdown-display').removeAttr('title');
+      this.$el.find(".dropdown-option[data-value='disall']").removeClass('dropdown-chose').attr("data-value","all").html("全选");
       return false;
     }
   };
 
   function Dropdown(options, el) {
-	  
+    
     this.$el = $(el);
     this.$select = this.$el.find('select');
     this.placeholder = this.$select.attr('placeholder');
@@ -518,7 +522,7 @@
       var _this = this;
       var $el = _this.$el;
       var $select = _this.$select;
-      var elemLi = selectToDiv.call(_this,$select.prop('outerHTML'));
+      var elemLi = selectToDiv($select.prop('outerHTML'));
       var template;
       if (isUpdate) {
         $el.find('ul')[isCover ? 'html' : 'append'](elemLi);
@@ -654,11 +658,12 @@
   });
 
   $.fn.downSelect = function (options) {
-	var _dropdown;
+  var _dropdown;
     this.each(function (index, el) {
-	   _dropdown = new Dropdown($.extend(true, {}, settings, options), el);
+     _dropdown = new Dropdown($.extend(true, {}, settings, options), el);
        $(el).data('dropdown', _dropdown);
     });
+    window._dropdown = _dropdown ;
     return _dropdown;
   }
 })(jQuery);

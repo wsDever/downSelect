@@ -388,3 +388,6 @@
   -o-animation: iui-fadeIn .2s ease-in forwards;
   animation: iui-fadeIn .2s ease-in forwards
 }
+.search-span{
+  color:red;
+}
