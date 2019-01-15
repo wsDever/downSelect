@@ -54,7 +54,7 @@
     data: [],
     searchable: true,
     radioMode: false,
-    clearAll: true,
+    clear: true,
     searchNoData: '<li style="color:#ddd">查无数据，换个词儿试试 /(ㄒoㄒ)/~~</li>',
     choice: function choice(selectedId,event) {},
     del: function del() {}
@@ -80,7 +80,7 @@
     var isRadioMode = this.config.radioMode;
     var templateSearch = searchable ? '<span class="dropdown-search">' + this.config.input + '</span>' : '';
 
-    return isLabelMode ? '<div class="dropdown-display-label"><div class="dropdown-chose-list">' + templateSearch + '</div></div><div class="dropdown-main'+( isRadioMode ? ' dropdown-radio-li':'' )+'">{{ul}}</div>' : '<a href="javascript:;" class="dropdown-display"><span class="dropdown-chose-list"></span></a>'+ (this.config.clearAll ? '<a href="javascript:;"  class="dropdown-clear-all">\xD7</a>' : '') + '<div class="dropdown-main'+( isRadioMode ? ' dropdown-radio-li':'' )+'">' + templateSearch + '{{ul}}</div>';
+    return isLabelMode ? '<div class="dropdown-display-label"><div class="dropdown-chose-list">' + templateSearch + '</div></div><div class="dropdown-main'+( isRadioMode ? ' dropdown-radio-li':'' )+'">{{ul}}</div>' : '<a href="javascript:;" class="dropdown-display"><span class="dropdown-chose-list"></span></a>'+ (this.config.clear ? '<a href="javascript:;"  class="dropdown-clear-all">\xD7</a>' : '') + '<div class="dropdown-main'+( isRadioMode ? ' dropdown-radio-li':'' )+'">' + templateSearch + '{{ul}}</div>';
   }
 
   // 超出限制提示
@@ -272,18 +272,17 @@
       if (event.keyCode > 36 && event.keyCode < 41) {
         return;
       }
-      result = data.map(function (value,key) {
+      data.map(function (value,key) {
         var tValue = $.extend(true, {}, value);
         var idx = tValue.name.toLowerCase().indexOf(intputValue);
-        if (idx > -1 || '' + tValue.id === '' + intputValue) {
+        if (idx > -1) {
           var val_before = tValue.name.substr(0,idx);
           var val_after = tValue.name.substr(idx + intputValue.length);
           tValue.name = val_before + '<span class="search-span">'+ intputValue + '</span>' + val_after;
-          return tValue;
-        }else{
-          return value;
+          result.push(tValue);
         }
       });
+      
       $el.find('ul').html(selectToDiv(objectToSelect(result,_dropdown.isSingleSelect)[0]) || _config.searchNoData);
     }, 300),
     control: function control(event) {
