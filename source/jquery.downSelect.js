@@ -434,7 +434,8 @@
       $select.find('option[value="' + value + '"]').prop('selected', true);
 
       // _dropdown.name.push('<span class="placeholder">' + _dropdown.placeholder + '</span>');
-      _dropdown.$choseList.html(_dropdown.name.join(''));
+      _dropdown.$choseList.find("span.dropdown-selected").remove();
+      _dropdown.$choseList.prepend(_dropdown.name.join(''));
       _config.choice.call(_dropdown, event);
     },
     del: function del(event) {
