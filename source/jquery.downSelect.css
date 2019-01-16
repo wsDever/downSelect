@@ -381,7 +381,8 @@
   line-height: 39px;
   padding: 0 5px;
   border-radius: 5px;
-  color: #999;
+  color: red;
+  box-sizing: border-box;
   -webkit-animation: iui-fadeIn .2s ease-in forwards;
   -moz-animation: iui-fadeIn .2s ease-in forwards;
   -ms-animation: iui-fadeIn .2s ease-in forwards;
@@ -390,4 +391,14 @@
 }
 .search-span{
   color:red;
+}
+.no-search-result{
+    height: 32px;
+    line-height: 32px;
+    font-size: 12px;
+    padding-left: 10px;
+}
+.empty-label-sel{
+  display: none;
+  color:#a5a5a5;
 }

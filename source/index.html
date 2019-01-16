@@ -17,11 +17,14 @@
     <div class="selectEl">
       <select style="display:none" name="" id="fields" multiple placeholder="请选择"> </select>
     </div>
+    <div class="selectEl2">
+      <select style="display:none" name="" id="fields2" multiple placeholder="请选择"> </select>
+    </div>
   <script>
     var data = [
       {"selected":false,"name":"你好","id":"sel0"},
-      {"selected":true,"name":"你好呀","id":"sel1"},
-      {"selected":true,"name":"你真好呀","id":"sel2"},
+      {"selected":false,"name":"你好呀","id":"sel1"},
+      {"selected":false,"name":"你真好呀","id":"sel2"},
       {"selected":false,"name":"你确实不错","id":"sel3"},
       {"selected":false,"name":"你确实不错呀","id":"sel4"},
       {"selected":false,"name":"你是确实不错的","id":"sel6"},
@@ -35,26 +38,39 @@
       ];
     // var dataJson = JSON.parse(data);
     var dataJson = data ;
-  	var select = [];
-  	$.each(select,function(index,value){
-  		$.each(dataJson,function(jindex,obj){
-  			if(value == obj.id){
-  				obj.selected = true;
-  			}
-  		})
-  	})
-  	var dropdown = $('.selectEl').downSelect({
+  	// var select = [];
+  	// $.each(select,function(index,value){
+  	// 	$.each(dataJson,function(jindex,obj){
+  	// 		if(value == obj.id){
+  	// 			obj.selected = true;
+  	// 		}
+  	// 	})
+  	// })
+  	// var dropdown = $('.selectEl').downSelect({
+   //      data:  dataJson,
+   //      limitCount: 2000,
+   //      multipleMode: 'label',
+   //      clear: true,
+   //      radioMode: true,
+   //      choice: function(xxxx, event) {
+   //        console.log(xxxx, this);
+   //      },
+   //  	  del : function(){
+   //  		  // alert(1);
+   //  	  }
+   //    });
+    var dropdown = $('.selectEl2').downSelect({
         data:  dataJson,
         limitCount: 2000,
-        multipleMode: 'text',
+        multipleMode: 'label',
         clear: true,
-        radioMode: false,
+        radioMode: true,
         choice: function(xxxx, event) {
           console.log(xxxx, this);
         },
-    	  del : function(){
-    		  // alert(1);
-    	  }
+        del : function(){
+          // alert(1);
+        }
       });
   </script>
 </body>

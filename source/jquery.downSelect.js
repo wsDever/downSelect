@@ -50,12 +50,12 @@
   var settings = {
     readonly: false,
     limitCount: Infinity,
-    input: '<input type="text" maxLength="20" placeholder="">',
+    input: '<input type="text" maxLength="20" placeholder="请输入">',
     data: [],
     searchable: true,
     radioMode: false,
     clear: true,
-    searchNoData: '<li style="color:#ddd">查无数据，换个词儿试试 /(ㄒoㄒ)/~~</li>',
+    searchNoData: '<li class="no-search-result">查无数据，换个词儿试试 /(ㄒoㄒ)/~~</li>',
     choice: function choice(selectedId,event) {},
     del: function del() {}
   };
@@ -80,7 +80,7 @@
     var isRadioMode = this.config.radioMode;
     var templateSearch = searchable ? '<span class="dropdown-search">' + this.config.input + '</span>' : '';
 
-    return isLabelMode ? '<div class="dropdown-display-label"><div class="dropdown-chose-list">' + templateSearch + '</div></div><div class="dropdown-main'+( isRadioMode ? ' dropdown-radio-li':'' )+'">{{ul}}</div>' : '<a href="javascript:;" class="dropdown-display"><span class="dropdown-chose-list"></span></a>'+ (this.config.clear ? '<a href="javascript:;"  class="dropdown-clear-all">\xD7</a>' : '') + '<div class="dropdown-main'+( isRadioMode ? ' dropdown-radio-li':'' )+'">' + templateSearch + '{{ul}}</div>';
+    return isLabelMode ? '<div class="dropdown-display-label ' + this.elId + '"><div class="dropdown-chose-list">' + templateSearch + '</div></div><div class="dropdown-main'+( isRadioMode ? ' dropdown-radio-li':'' )+'">{{ul}}</div>' : '<a href="javascript:;" class="dropdown-display"><span class="dropdown-chose-list"></span></a>'+ (this.config.clear ? '<a href="javascript:;"  class="dropdown-clear-all">\xD7</a>' : '') + '<div class="dropdown-main'+( isRadioMode ? ' dropdown-radio-li':'' )+'">' + templateSearch + '{{ul}}</div>';
   }
 
   // 超出限制提示
@@ -98,7 +98,7 @@
     $el.append($alert);
     _dropdown.maxItemAlertTimer = setTimeout(function () {
       $el.find('.dropdown-maxItem-alert').remove();
-    }, 1000);
+    }, 3000);
   }
 
   // select-option 转 ul-li
@@ -125,7 +125,7 @@
   }
 
   // object-data 转 select-option
-  function objectToSelect(data,singleSelectFlag) {
+  function objectToSelect(data,singleSelectFlag,searchMode) {
     var map = {};
     var result = '';
     var name = [];
@@ -134,7 +134,7 @@
     if (!data || !data.length) {
       return false;
     }
-    var defaultdata = singleSelectFlag  ? '[]' : '[{"selected":false,"name":"全选","id":"all"}]';
+    var defaultdata = singleSelectFlag || searchMode  ? '[]' : '[{"selected":false,"name":"全选","id":"all"}]';
     var dataJson = JSON.parse(defaultdata);
     $.each(dataJson, function (index, val) {
         // disable 权重高于 selected
@@ -282,8 +282,7 @@
           result.push(tValue);
         }
       });
-      
-      $el.find('ul').html(selectToDiv(objectToSelect(result,_dropdown.isSingleSelect)[0]) || _config.searchNoData);
+      $el.find('ul').html(selectToDiv(objectToSelect(result,_dropdown.isSingleSelect,!!intputValue)[0]) || _config.searchNoData);
     }, 300),
     control: function control(event) {
       var keyCode = event.keyCode;
@@ -345,9 +344,9 @@
         }
       } else {
         if(value =='all'){
-          $target.addClass('dropdown-chose').attr("data-value","disall").html("取消");
           var allli = $target.parent().children();
           if(allli.length - 1 < _config.limitCount){
+            $target.addClass('dropdown-chose').attr("data-value","disall").html("取消");
             $.each(allli,function(){
               if($(this).attr("data-value") != 'disall'){
                 $(this).addClass('dropdown-chose');
@@ -434,7 +433,7 @@
 
       $select.find('option[value="' + value + '"]').prop('selected', true);
 
-      _dropdown.name.push('<span class="placeholder">' + _dropdown.placeholder + '</span>');
+      // _dropdown.name.push('<span class="placeholder">' + _dropdown.placeholder + '</span>');
       _dropdown.$choseList.html(_dropdown.name.join(''));
       _config.choice.call(_dropdown, event);
     },
@@ -457,11 +456,7 @@
         }
 
       });
-
       _dropdown.selectAmount--;
-      // if(_dropdown.selectAmount == 0){
-      //   _dropdown.$choseList.html($('<span class="placeholder"></span>').text(_dropdown.placeholder).show());
-      // }
       _dropdown.$el.find('[data-value="' + id + '"]').removeClass('dropdown-chose');
       _dropdown.$el.find('[value="' + id + '"]').prop('selected', false).removeAttr('selected');
       $target.closest('.dropdown-selected').remove();
@@ -484,7 +479,8 @@
     
     this.$el = $(el);
     this.$select = this.$el.find('select');
-    this.placeholder = this.$select.attr('placeholder');
+    this.placeholder = this.$select.attr('placeholder') || '请选择';
+    this.elId = this.$select.attr("id");
     this.config = options;
     this.name = [];
     this.isSingleSelect = !this.$select.prop('multiple');
@@ -499,6 +495,10 @@
       var _this = this;
       var _config = _this.config;
       var $el = _this.$el;
+      if(!_this.elId){
+        alert("请检查：select元素id不能为空！");
+        return ;
+      }
       _this.$select.hide();
       //  判断dropdown是否单选，是否token模式
       $el.addClass(_this.isSingleSelect ? 'dropdown-single' : _this.isLabelMode ? 'dropdown-multiple-label' : 'dropdown-multiple');
@@ -507,7 +507,7 @@
         _config.data = selectToObject(_this.$select);
       }
 
-      var processResult = objectToSelect(_config.data,_this.isSingleSelect);
+      var processResult = objectToSelect(_config.data,_this.isSingleSelect,false);
 
       _this.name = processResult[1];
       _this.selectAmount = processResult[2];
@@ -541,7 +541,6 @@
       if (!_this.isLabelMode) {
         _this.$choseList.html($('<span class="placeholder"></span>').text(_this.placeholder));
       }
-
       _this.$choseList.prepend(_this.name.join(''));
     },
     bindEvent: function bindEvent() {
@@ -637,7 +636,7 @@
 
       _config.data = _isCover ? data.slice(0) : _config.data.concat(data);
 
-      var processResult = objectToSelect(_config.data,_this.isSingleSelect);
+      var processResult = objectToSelect(_config.data,_this.isSingleSelect,false);
 
       _this.name = processResult[1];
       _this.selectAmount = processResult[2];
