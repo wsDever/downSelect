@@ -4,22 +4,56 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-  <!-- <title>Dropdown.js - a lightweight dropdown of jQuery plugins </title> -->
-  <!-- <link rel="stylesheet" type="text/css" href="http://www.jq22.com/jquery/bootstrap-3.3.4.css"> -->
   <script src="http://www.jq22.com/jquery/jquery-1.10.2.js"></script>
   <link rel="stylesheet" type="text/css" href="./jquery.downSelect.css">
   <link rel="stylesheet" type="text/css" href="./owner.css">
 
   <script src="./jquery.downSelect.js"></script>
+  <style type="text/css" media="screen">
+    .item-title{
+      height: 40px;
+      line-height: 40px;
+    }
+  </style>
 </head>
 
 <body>
-    <div class="selectEl">
-      <select style="display:none" name="" id="fields" multiple placeholder="请选择"> </select>
-    </div>
-    <div class="selectEl2">
-      <select style="display:none" name="" id="fields2" placeholder="请选择"> </select>
-    </div>
+      <div class="item-title">
+        多选一
+      </div>
+      <div class="selectEl" style="width:360px;margin-bottom: 20px">
+        <select style="display:none" name="" id="fields" multiple placeholder="请选择"> </select>
+      </div>
+      <div class="item-title">
+        多选二
+      </div>
+      <div class="selectEl0" style="width:360px;margin-bottom: 20px">
+        <select style="display:none" name="" id="fields" multiple placeholder="请选择"> </select>
+      </div>
+      <div class="item-title">
+        多选三
+      </div>
+      <div class="selectEl1" style="width:360px;margin-bottom: 20px">
+        <select style="display:none" name="" id="fields" multiple placeholder="请选择"> </select>
+      </div>
+      <div class="item-title">
+        单选一
+      </div>
+      <div class="selectEl2" style="width:360px;margin-bottom: 20px">
+        <select style="display:none" name="" id="fields2" placeholder="请选择"> </select>
+      </div>
+      <div class="item-title">
+        单选二
+      </div>
+      <div class="selectEl20" style="width:360px;margin-bottom: 20px">
+        <select style="display:none" name="" id="fields2" placeholder="请选择"> </select>
+      </div>
+      <div class="item-title">
+        单选三
+      </div>
+      <div class="selectEl21" style="width:360px;margin-bottom: 20px">
+        <select style="display:none" name="" id="fields2" placeholder="请选择"> </select>
+      </div>
   <script>
     var data = [
       {"selected":false,"name":"你好","id":"sel0"},
@@ -36,30 +70,50 @@
       {"selected":false,"name":"你还是一个确实不错的人呀哈","id":"sel12"},
       {"selected":false,"name":"你还是一个确实不错的人呀哈哈","id":"sel13"}
       ];
-    // var dataJson = JSON.parse(data);
     var dataJson = data ;
-  	// var select = [];
-  	// $.each(select,function(index,value){
-  	// 	$.each(dataJson,function(jindex,obj){
-  	// 		if(value == obj.id){
-  	// 			obj.selected = true;
-  	// 		}
-  	// 	})
-  	// })
-  	// var dropdown = $('.selectEl').downSelect({
-   //      data:  dataJson,
-   //      limitCount: 2000,
-   //      multipleMode: 'label',
-   //      clear: true,
-   //      radioMode: true,
-   //      choice: function(xxxx, event) {
-   //        console.log(xxxx, this);
-   //      },
-   //  	  del : function(){
-   //  		  // alert(1);
-   //  	  }
-   //    });
-    var dropdown = $('.selectEl2').downSelect({
+
+  	var dropdown1 = $('.selectEl').downSelect({
+        data:  dataJson,
+        limitCount: 2000,
+        multipleMode: 'label',
+        clear: true,
+        radioMode: true,
+        choice: function(xxxx, event) {
+          console.log(xxxx, this);
+        },
+    	  del : function(xxxx){
+    		  console.log('clear')
+    	  }
+      });
+
+    var dropdown10 = $('.selectEl0').downSelect({
+        data:  dataJson,
+        limitCount: 2000,
+        multipleMode: 'text',
+        clear: true,
+        radioMode: true,
+        choice: function(xxxx, event) {
+          console.log(xxxx, this);
+        },
+        del : function(){
+          alert("clear")
+        }
+      }); 
+    var dropdown11 = $('.selectEl1').downSelect({
+        data:  dataJson,
+        limitCount: 2000,
+        multipleMode: 'text',
+        clear: true,
+        radioMode: false,
+        choice: function(xxxx, event) {
+          console.log(xxxx, this);
+        },
+        del : function(){
+          alert("clear")
+        }
+      }); 
+
+    var dropdown2 = $('.selectEl2').downSelect({
         data:  dataJson,
         limitCount: 2000,
         multipleMode: 'label',
@@ -69,7 +123,33 @@
           console.log(xxxx, this);
         },
         del : function(){
-          // alert(1);
+          alert("clear")
+        }
+      });
+    var dropdown20 = $('.selectEl20').downSelect({
+        data:  dataJson,
+        limitCount: 2000,
+        multipleMode: 'text',
+        clear: true,
+        radioMode: true,
+        choice: function(xxxx, event) {
+          console.log(xxxx, this);
+        },
+        del : function(){
+          alert("clear")
+        }
+      });
+    var dropdown21 = $('.selectEl21').downSelect({
+        data:  dataJson,
+        limitCount: 2000,
+        multipleMode: 'text',
+        clear: true,
+        radioMode: false,
+        choice: function(xxxx, event) {
+          console.log(xxxx, this);
+        },
+        del : function(){
+          alert("clear")
         }
       });
   </script>
